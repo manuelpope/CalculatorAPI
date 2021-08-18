@@ -23,16 +23,20 @@ public class SolarDemandingEnergyService {
 
     public static final Predicate<Load> LOAD_DC_POWER = e -> e.getPowerDC() > 0 && e.getPowerAc() == 0;
     public static final Predicate<Load> LOAD_AC_POWER = e -> e.getPowerAc() > 0 && e.getPowerDC() == 0;
+
+
     public static final Function<Load, Load> MAPPER_DC = r -> {
         r.setDayEnergy(r.getUsageDay() * r.getQuantity() * r.getPowerDC());
         r.setNightEnergy(r.getUsageNight() * r.getQuantity() * r.getPowerDC());
         return r;
     };
+
     public static final Function<Load, Load> MAPPER_AC = r -> {
         r.setDayEnergy(r.getUsageDay() * r.getQuantity() * r.getPowerAc());
         r.setNightEnergy(r.getUsageNight() * r.getQuantity() * r.getPowerAc());
         return r;
     };
+
     public static final BiFunction<List<Load>, List<Load>, Integer> MAPPER_TOTAL_DEMAND_ENERGY = (listDC1, listAC1) -> listAC1.stream().reduce(0, (s, e) -> s + e.getDayEnergy() + e.getNightEnergy(), Integer::sum) +
             listDC1.stream().reduce(0, (s, e) -> s + e.getDayEnergy() + e.getNightEnergy(), Integer::sum);
 
